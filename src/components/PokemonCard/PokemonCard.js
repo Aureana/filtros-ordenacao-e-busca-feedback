@@ -5,6 +5,7 @@ import {getTypes} from '../../utils/ReturnPokemonType'
 
 
 const PokemonCard = (props) => {
+
   return (
     <Container color={props.cardColor}>
       <div>

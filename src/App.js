@@ -1,9 +1,9 @@
-import { useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import pokemons from "./pokemon/pokemon.json";
 import PokemonCard from "./components/PokemonCard/PokemonCard";
 import { getColors } from "./utils/ReturnCardColor";
 import Header from "./components/Header/Header.js";
+import { useState } from "react";
 const GlobalStyle = createGlobalStyle`
   *{
     padding: 0;
@@ -19,34 +19,59 @@ const CardsContainer = styled.div`
   justify-items: center;
 `;
 function App() {
-  const [pesquisa, setPesquisa] = useState("");
-  const [idFilter, setIdFilter] = useState("");
+  const [buscaId,setBuscaId] = useState("")
+  console.log("buscaId")
+  const [buscaNome, setBuscaNome] = useState("")
+  console.log("buscaNome")
+  const [ordenaAlfabeto,setordenaAlfabeto]=useState("")
+  console.log("OrdenarObjeto")
+  const [buscaTipo, setBuscaTipo]= useState("")
+  console.log("buscaTipo")
+
 
   return (
     <>
       <GlobalStyle />
       <Header
-        idFilter={idFilter}
-        setIdFilter={setIdFilter}
-        pesquisa={pesquisa}
-        setPesquisa={setPesquisa}
+      buscaId={buscaId} 
+      setBuscaId={setBuscaId}
+      buscaNome={buscaNome}
+      setBuscaNome={setBuscaNome}
+      setordenaAlfabeto={setordenaAlfabeto}
+      setBuscaTipo={setBuscaTipo}
       />
-      <CardsContainer>
-        {pokemons.filter((pokemon) => {
-          return idFilter ? pokemon.id.includes(idFilter) : pokemon
+      <CardsContainer>        
+        {pokemons
+        //filtrar por Id
+        .filter((pokemon) =>pokemon.id.includes(buscaId)) /* console.log(pokemon)*/
+         //filtrar por nome
+        .filter((pokemon) =>pokemon.name.english.toLowerCase().includes(buscaNome))
+          // nomes em ordem afalbetica crecente e decrescente 
+         .sort((a,b)=>{
+          if(ordenaAlfabeto === "crescente"){
+            if(a.name.english < b.name.english){
+              return-1
+            }else{
+              return 1
+            }
+            
+          }else if(ordenaAlfabeto === "decrescente"){
+            if(a.name.english < b.name.english){
+              return 1
+            }else{
+              return -1
+            }
+         }
         })
-          .filter((pokemon) => {
-            return pokemon.name.english.toLowerCase().includes(pesquisa.toLowerCase());
-          })
-          .map((pokemon) => {
-            return (
-              <PokemonCard
-                cardColor={getColors(pokemon.type[0])}
-                key={pokemon.id}
-                pokemon={pokemon}
-              />
-            );
-          })}
+        .filter((pokemon)=> buscaTipo? pokemon.type.includes(buscaTipo) : pokemon)
+      
+        .map((pokemon) => {
+          return <PokemonCard
+          cardColor={getColors(pokemon.type[0])}
+          key={pokemon.id}
+          pokemon={pokemon}
+        />
+   })}
       </CardsContainer>
     </>
   );
